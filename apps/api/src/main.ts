@@ -3,7 +3,7 @@ import { Message } from '@group1/api-interfaces';
 
 const app = express();
 
-const greeting: Message = { message: 'Welcome to api!' };
+const greeting: Message = { message: 'espalier api works' };
 
 app.get('/api', (req, res) => {
   res.send(greeting);
