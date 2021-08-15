@@ -1,6 +1,11 @@
 # Group1 CSC480 Workspace App
 
-run locally with
+to run full application locally
+
 ```
-nx run-many --target=serve --parallel=true --all=true
+# runs db
+~$ docker-compose up -d
+
+# runs api and react app
+~$ nx run-many --target=serve --parallel=true --all=true
 ```
