@@ -12,7 +12,7 @@ export const App = () => {
 
   return (
     <div style={{ textAlign: 'center' }}>
-      <div>{m.message}</div>
+      <div>{m.message} on the frontend</div>
     </div>
   );
 };

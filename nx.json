@@ -14,12 +14,7 @@
     "default": {
       "runner": "@nrwl/nx-cloud",
       "options": {
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e"
-        ],
+        "cacheableOperations": ["build", "lint", "test", "e2e"],
         "accessToken": "Y2ExNWY4NjUtNTg2ZC00NDg3LWJlMWEtZmQwMTgwNGJjMzY0fHJlYWQtd3JpdGU=",
         "canTrackAnalytics": false,
         "showUsageWarnings": true
@@ -35,20 +30,18 @@
     ]
   },
   "projects": {
-    "api": {
-      "tags": []
-    },
     "api-interfaces": {
       "tags": []
     },
-    "unknown": {
+    "backend": {
       "tags": []
     },
-    "unknown-e2e": {
+    "frontend": {
+      "tags": []
+    },
+    "frontend-e2e": {
       "tags": [],
-      "implicitDependencies": [
-        "unknown"
-      ]
+      "implicitDependencies": ["frontend"]
     }
   }
 }
