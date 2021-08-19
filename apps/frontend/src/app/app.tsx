@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Message } from '@group1/api-interfaces';
-import {Routes} from '@group1/frontend/ui-shared'
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import {Routes} from '@group1/frontend/ui-shared';
 
 
 export const App = () => {
