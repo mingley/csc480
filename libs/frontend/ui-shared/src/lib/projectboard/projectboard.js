@@ -132,8 +132,8 @@ const Projectboard = ({ match }) => {
 
   return (
     <>
-      {/* <Navbar />
-      {isOpen && <AddColumnForm 
+      <Navbar />
+      {/* {isOpen && <AddColumnForm 
       handleClose={addColumn}
     />}
     {inviteFormisOpen && <InviteForm 
