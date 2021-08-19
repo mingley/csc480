@@ -2,8 +2,8 @@
 import React, {useState} from 'react'
 import styled from 'styled-components'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
-//import AddTaskForm from './AddTaskForm'
 import Task from '../task/Task'
+import AddTaskForm from '../add-task-from/AddTaskForm'
 
 
 const Container = styled.div`
@@ -84,9 +84,9 @@ function Column(props) {
                     {...provided.draggableProps}>
                     <div>
                         
-                    {/* {isOpen && <AddTaskForm 
+                    {isOpen && <AddTaskForm 
                     handleClose={addTask}
-                     />} */}
+                     />}
                      
                     <Title {...provided.dragHandleProps}>{props.column.title}</Title>
                     <Button onClick={removeColumn}>x</Button>

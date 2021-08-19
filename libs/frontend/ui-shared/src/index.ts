@@ -1,4 +1,3 @@
-export * from './lib/add-task-form/add-task-form';
 export * from './lib/register/register';
 export * from './lib/not-found-page/not-found-page';
 export * from './lib/projectboardslist/projectboardslist';

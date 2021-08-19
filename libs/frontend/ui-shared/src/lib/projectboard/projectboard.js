@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import dataset from '../dataset';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { Navbar} from '../..';
-//import InviteForm from '../InviteForrm'
-//import AddColumnForm from '../AddColumnForm'
+import AddColumnForm from '../add-column-form/AddColumnForm'
 import Column from '../column/Column';
+import InviteForm from '../invite-form/InviteForrm';
 
 
 const Container = styled.div`
@@ -133,12 +133,12 @@ const Projectboard = ({ match }) => {
   return (
     <>
       <Navbar />
-      {/* {isOpen && <AddColumnForm 
+      {isOpen && <AddColumnForm 
       handleClose={addColumn}
     />}
     {inviteFormisOpen && <InviteForm 
       handleClose={inviteUser}
-    />} */}
+    />}
     <h2>{name}</h2>
     <Button onClick={addColumn}>Add Column</Button>
     <Button onClick={inviteUser}>Invite User</Button>
