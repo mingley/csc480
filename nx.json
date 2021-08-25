@@ -42,6 +42,9 @@
     "frontend-e2e": {
       "tags": [],
       "implicitDependencies": ["frontend"]
+    },
+    "frontend-ui-shared": {
+      "tags": []
     }
   }
 }

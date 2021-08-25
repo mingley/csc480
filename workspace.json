@@ -166,6 +166,27 @@
           }
         }
       }
+    },
+    "frontend-ui-shared": {
+      "root": "libs/frontend/ui-shared",
+      "sourceRoot": "libs/frontend/ui-shared/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/frontend/ui-shared/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/frontend/ui-shared"],
+          "options": {
+            "jestConfig": "libs/frontend/ui-shared/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

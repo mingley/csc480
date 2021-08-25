@@ -49,7 +49,7 @@ const Button = styled.button`
     const AddTaskButton = styled(Button)`
     flex-grow: 0;
     color:white;
-   
+    padding: 5px;
     height:30%;
     width:100%;
     font-size:70%;

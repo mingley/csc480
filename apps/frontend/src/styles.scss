@@ -1,6 +1,4 @@
 /* You can add global styles to this file, and also import other style files */
-<<<<<<< Updated upstream
-=======
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -21,8 +19,8 @@ body {
 }
 
 .box {
-  position: relative;
-  width: 25%;
+  position: reletive;
+  width: 70%;
   margin: 0 auto;
   height: auto;
   max-height: 70vh;
@@ -32,14 +30,13 @@ body {
   padding: 20px;
   border: 1px solid #999;
   overflow: auto;
-  
 }
 
 .close-icon {
   content: 'x';
   cursor: pointer;
   position: fixed;
-  right: calc(37.5% - 10px);
+  right: calc(15% - 30px);
   top: calc(100vh - 85vh - 33px);
   background: #ededed;
   width: 25px;
@@ -128,14 +125,3 @@ nav a:hover {
   color: black;
   padding: 16px 0 0 0;
 }
-
-.centered_div {
-  width: Xu;
-  height: Yu;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-left: -(X/2)u;
-  margin-top: -(Y/2)u;
-}
->>>>>>> Stashed changes
