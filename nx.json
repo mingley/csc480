@@ -45,6 +45,13 @@
     },
     "frontend-ui-shared": {
       "tags": []
+    },
+    "nextjs-frontend": {
+      "tags": []
+    },
+    "nextjs-frontend-e2e": {
+      "tags": [],
+      "implicitDependencies": ["nextjs-frontend"]
     }
   }
 }

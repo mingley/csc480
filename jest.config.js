@@ -3,5 +3,6 @@ module.exports = {
     '<rootDir>/apps/frontend',
     '<rootDir>/apps/backend',
     '<rootDir>/libs/frontend/ui-shared',
+    '<rootDir>/apps/nextjs-frontend',
   ],
 };
