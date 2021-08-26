@@ -1,6 +1,5 @@
 import * as express from 'express';
 import { Message } from '@group1/api-interfaces';
-import { createConnection } from 'typeorm';
 import dbConfig from './config/database';
 
 const greeting: Message = { message: 'espalier api works' };
