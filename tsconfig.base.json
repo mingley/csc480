@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@group1/api-interfaces": ["libs/api-interfaces/src/index.ts"],
-      "@group1/frontend/ui-shared": ["libs/frontend/ui-shared/src/index.ts"]
+      "@group1/frontend/ui-shared": ["libs/frontend/ui-shared/src/index.ts"],
+      "@group1/node-util": ["libs/node-util/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

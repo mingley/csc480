@@ -7,9 +7,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: kiwi
-      POSTGRES_USER: _username_
-      POSTGRES_PASSWORD: _password_
+      POSTGRES_DB: mydb
+      POSTGRES_USER: username
+      POSTGRES_PASSWORD: password
 
   adminer:
     image: adminer

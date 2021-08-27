@@ -187,6 +187,27 @@
           }
         }
       }
+    },
+    "node-util": {
+      "root": "libs/node-util",
+      "sourceRoot": "libs/node-util/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/node-util/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/node-util"],
+          "options": {
+            "jestConfig": "libs/node-util/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
     }
   },
   "cli": {

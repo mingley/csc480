@@ -45,6 +45,9 @@
     },
     "frontend-ui-shared": {
       "tags": []
+    },
+    "node-util": {
+      "tags": []
     }
   }
 }
