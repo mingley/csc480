@@ -7,3 +7,4 @@ export async function dbTest(req, res, next): Promise<string> {
   res.send(data);
   return 'works';
 }
+

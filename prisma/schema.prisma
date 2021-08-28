@@ -11,18 +11,34 @@ generator client {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
-  email    String    @unique
+  id       Int    @id @default(autoincrement())
+  email    String @unique
   name     String
   password String
+  Task     Task[]
+  projects Project[]
 }
 
 model Task {
-  id         Int     @id @default(autoincrement())
-  title      String
+  id        Int    @id @default(autoincrement())
+  title     String
+  assignee    User   @relation(fields: [assignee_id], references: [id])
+  assignee_id Int
+  column    Column @relation(fields: [column_id], references: [id])
+  column_id  Int
 }
 
 model Project {
   id          Int    @id @default(autoincrement())
   description String
+  columns    Column[]
+  users      User[]
+}
+
+model Column {
+  id        Int    @id @default(autoincrement())
+  title     String
+  tasks     Task[]
+  project   Project @relation(fields: [project_id], references: [id])
+  project_id Int
 }
