@@ -4,7 +4,6 @@ import { Droppable, Draggable } from 'react-beautiful-dnd';
 import Task from '../task/Task';
 import AddTaskForm from '../add-task-from/AddTaskForm';
 import { Box, Heading, Stack, VStack } from '@chakra-ui/react';
-// import TaskList from '../task-list/TaskList';
 
 export interface ColumnProps {
   column: any;

@@ -4,14 +4,6 @@ import { Draggable } from 'react-beautiful-dnd';
 import { ITask } from '../column/Column';
 import { Box, Text, VStack } from '@chakra-ui/react';
 
-// const Container = styled.div`
-//   border: 1px solid lightgrey;
-//   padding: 8px;
-//   margin-bottom: 8px;
-//   border-radius: 2px;
-//   background-color: ${(props) => (props.isDragging ? 'lightgreen' : 'white')};
-// `;
-
 export interface TaskProps {
   task: ITask;
 }
