@@ -1,15 +1,17 @@
 import { PrismaClient } from '@prisma/client';
 
-export async function dbTest(req, res, next): Promise<string> {
+export async function dbTest(_req, res, _next): Promise<string> {
   const client = new PrismaClient();
   // const userData = await client.user.findMany();
-  const project = await client.project.findMany({
+  const project = await client.user.findMany({
     include: {
-      data: {
+      project: {
         include: {
-          project: true,
-          tasks: true,
-          columns: true
+          columns: {
+            include: {
+              tasks: true
+            }
+          }
         }
       }
     }
