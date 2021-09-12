@@ -8,12 +8,13 @@ generator client {
 }
 
 model User {
-  id       String    @id @default(cuid())
-  email    String    @unique
-  name     String
-  password String
-  project  Project[]
-  role     UserRole
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String?
+  password     String
+  refreshToken String?   @unique
+  project      Project[]
+  role         UserRole
 }
 
 model Project {
@@ -26,23 +27,23 @@ model Project {
   columnOrder      String[]
 }
 
-model Task {
-  id        String     @id @default(cuid())
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  title     String?
-  status    TaskStatus
-  content   String?
-  column    Column     @relation(fields: [columnId], references: [id])
-  columnId  String
-}
-
 model Column {
   id        String  @id @default(cuid())
   project   Project @relation(fields: [projectId], references: [id])
   projectId String
   title     String?
   tasks     Task[]
+}
+
+model Task {
+  id        String     @id @default(cuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  title     String
+  status    TaskStatus
+  content   String
+  column    Column     @relation(fields: [columnId], references: [id])
+  columnId  String
 }
 
 enum UserRole {

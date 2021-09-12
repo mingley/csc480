@@ -8,8 +8,9 @@ CREATE TYPE "TaskStatus" AS ENUM ('TODO', 'IN_PROGRESS', 'REVIEW', 'DONE');
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" TEXT,
     "password" TEXT NOT NULL,
+    "refreshToken" TEXT,
     "role" "UserRole" NOT NULL,
 
     PRIMARY KEY ("id")
@@ -27,6 +28,15 @@ CREATE TABLE "Project" (
 );
 
 -- CreateTable
+CREATE TABLE "Column" (
+    "id" TEXT NOT NULL,
+    "projectId" TEXT NOT NULL,
+    "title" TEXT,
+
+    PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Task" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -39,23 +49,17 @@ CREATE TABLE "Task" (
     PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "Column" (
-    "id" TEXT NOT NULL,
-    "projectId" TEXT NOT NULL,
-    "title" TEXT,
-
-    PRIMARY KEY ("id")
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "User.email_unique" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User.refreshToken_unique" ON "User"("refreshToken");
 
 -- AddForeignKey
 ALTER TABLE "Project" ADD FOREIGN KEY ("creatorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Task" ADD FOREIGN KEY ("columnId") REFERENCES "Column"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Column" ADD FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Column" ADD FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Task" ADD FOREIGN KEY ("columnId") REFERENCES "Column"("id") ON DELETE CASCADE ON UPDATE CASCADE;

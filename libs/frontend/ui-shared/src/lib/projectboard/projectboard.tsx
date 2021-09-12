@@ -2,101 +2,37 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import dataset from '../dataset';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
 import { Navbar } from '../..';
 import AddColumnForm from '../add-column-form/AddColumnForm';
 import Column from '../column/Column';
 import InviteForm from '../invite-form/InviteForrm';
-import { Box, Button, Flex } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { snapshotViewportBox } from 'framer-motion';
+
+// interface ProjectBoardData {
+//   name: string;
+//   columns: {
+//     id: string {
+
+//     }
+//   }
+// }
 
 // @ts-ignore
 const Projectboard = ({ match }) => {
   const name = match.params.name;
+  const [columns, setColumns] = useState<any>();
 
-  const workspace = dataset.find((workspace) => workspace.name === name);
-
-  const [data, setData] = useState(workspace?.data);
   const [isOpen, setIsOpen] = useState(false);
   const [inviteFormisOpen, inviteFormsetIsOpen] = useState(false);
 
-  // const onDragEnd = (result) => {
-  //   const { destination, source, draggableId, type } = result;
-  //   //If there is no destination
-  //   if (!destination) {
-  //     return;
-  //   }
-
-  //   //If source and destination is the same
-  //   if (
-  //     destination.droppableId === source.droppableId &&
-  //     destination.index === source.index
-  //   ) {
-  //     return;
-  //   }
-
-  //If you're dragging columns
-  // if (type === 'column') {
-  //   const newColumnOrder = Array.from(data.columnOrder);
-  //   newColumnOrder.splice(source.index, 1);
-  //   newColumnOrder.splice(destination.index, 0, draggableId);
-  //   const newState = {
-  //     ...data,
-  //     columnOrder: newColumnOrder,
-  //   };
-  //   setData(newState);
-  //   return;
-  // }
-
-  //Anything below this happens if you're dragging tasks
-  // const start = data.columns[source.droppableId];
-  // const finish = data.columns[destination.droppableId];
-
-  //If dropped inside the same column
-  // if (start === finish) {
-  //   const newTaskIds = Array.from(start.taskIds);
-  //   newTaskIds.splice(source.index, 1);
-  //   newTaskIds.splice(destination.index, 0, draggableId);
-  //   const newColumn = {
-  //     ...start,
-  //     taskIds: newTaskIds,
-  //   };
-  //   const newState = {
-  //     ...data,
-  //     columns: {
-  //       ...data.columns,
-  //       [newColumn.id]: newColumn,
-  //     },
-  //   };
-  //   setData(newState);
-  //   return;
-  // }
-
-  //If dropped in a different column
-  // const startTaskIds = Array.from(start.taskIds);
-  // startTaskIds.splice(source.index, 1);
-  // const newStart = {
-  //   ...start,
-  //   taskIds: startTaskIds,
-  // };
-
-  // const finishTaskIds = Array.from(finish.taskIds);
-  // finishTaskIds.splice(destination.index, 0, draggableId);
-  // const newFinish = {
-  //   ...finish,
-  //   taskIds: finishTaskIds,
-  // };
-
-  // const newState = {
-  //   ...data,
-  //   columns: {
-  //     ...data.columns,
-  //     [newStart.id]: newStart,
-  //     [newFinish.id]: newFinish,
-  //   },
-  // };
-
-  // setData(newState);
-  // };
+  useEffect(() => {
+    const workspace = dataset.find((workspace) => workspace.name === name);
+    setColumns(workspace?.columns);
+    console.log(columns);
+  }, [columns, name]);
 
   const addColumn = () => {
     setIsOpen(!isOpen);
@@ -106,6 +42,43 @@ const Projectboard = ({ match }) => {
   const inviteUser = () => {
     inviteFormsetIsOpen(!inviteFormisOpen);
     console.log('You have added a user');
+  };
+
+  const onDragEnd = (result: DropResult, columns: { [x: string]: any; }, setColumns: { (value: any): void; (arg0: any): void; }) => {
+    if (!result.destination) return;
+    const { source, destination } = result;
+
+    if (source.droppableId !== destination.droppableId) {
+      const sourceColumn = columns[source.droppableId];
+      const destColumn = columns[destination.droppableId];
+      const sourceItems = [...sourceColumn.items];
+      const destItems = [...destColumn.items];
+      const [removed] = sourceItems.splice(source.index, 1);
+      destItems.splice(destination.index, 0, removed);
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...sourceColumn,
+          items: sourceItems,
+        },
+        [destination.droppableId]: {
+          ...destColumn,
+          items: destItems,
+        },
+      });
+    } else {
+      const column = columns[source.droppableId];
+      const copiedItems = [...column.items];
+      const [removed] = copiedItems.splice(source.index, 1);
+      copiedItems.splice(destination.index, 0, removed);
+      setColumns({
+        ...columns,
+        [source.droppableId]: {
+          ...column,
+          items: copiedItems,
+        },
+      });
+    }
   };
 
   return (
@@ -119,13 +92,74 @@ const Projectboard = ({ match }) => {
         background="gray.700"
         rounded={6}
       >
-        {data?.columnOrder.map((columnId) => {
-          // @ts-ignore
-          const column = data.columns[columnId];
-          // @ts-ignore
-          const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
-          return <Column key={column.id} column={column} tasks={tasks} />;
-        })}
+        <DragDropContext
+          onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
+        >
+          {Object.entries(columns).map(([columnId, column], index) => {
+            return (
+              <Flex direction="row" alignItems="center" key={columnId}>
+                {
+                  // column heading
+                }
+                <Heading>{column.title}</Heading>
+                <Box m={5}>
+                  <Droppable droppableId={columnId} key={columnId}>
+                    {(provided, snapshot) => {
+                      // column tasks
+                      return (
+                        <Box
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          background={
+                            snapshot.isDraggingOver ? 'blue.100' : 'gray.700'
+                          }
+                          p={5}
+                          width="20%"
+                        >
+                          {column.tasks.map((task: { id: string; content: string; }, index: number) => {
+                            return (
+                              <Draggable
+                                key={task.id}
+                                draggableId={task.id}
+                                index={index}
+                              >
+                                {(provided, snapshot) => {
+                                  return (
+                                    <Box
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      mb={5}
+                                      p={5}
+                                      backgroundColor={
+                                        snapshot.isDragging
+                                          ? 'blue.100'
+                                          : 'gray.700'
+                                      }
+                                    >
+                                      {task.content}
+                                    </Box>
+                                  );
+                                }}
+                              </Draggable>
+                            );
+                          })}
+                          {provided.placeholder}
+                        </Box>
+                      );
+                    }}
+                  </Droppable>
+                </Box>
+              </Flex>
+            );
+
+            // // @ts-ignore
+            // const column = data.columns[columnId];
+            // // @ts-ignore
+            // const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
+            // return <Column key={column.id} column={column} tasks={tasks} />;
+          })}
+        </DragDropContext>
       </Flex>
       <Flex alignItems="center" justify="end" p={2}>
         <Button onClick={addColumn} mr={2}>
@@ -133,7 +167,7 @@ const Projectboard = ({ match }) => {
         </Button>
         <Button onClick={inviteUser}>Invite User</Button>
       </Flex>
-      {isOpen && (
+      {/* {isOpen && (
         <AddColumnForm setIsOpen={setIsOpen} data={data} setData={setData} />
       )}
       {inviteFormisOpen && (
@@ -142,7 +176,7 @@ const Projectboard = ({ match }) => {
           data={data}
           setData={setData}
         />
-      )}
+      )} */}
     </Box>
   );
 };
