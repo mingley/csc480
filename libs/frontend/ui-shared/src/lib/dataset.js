@@ -1,4 +1,6 @@
-const dataset = [
+import { atom } from 'recoil';
+
+export const dataset = [
   {
     name: 'Project Board 1',
     columns: {
@@ -56,4 +58,7 @@ const dataset = [
   },
 ];
 
-export default dataset;
+export const userState = atom({
+  key: 'userState',
+  default: '',
+});

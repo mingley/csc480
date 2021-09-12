@@ -9,8 +9,8 @@ export const AppConfiguration: {
   PORT: string,
   SALT_ROUNDS: number
 } = {
-  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET ?? '',
-  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET ?? '',
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET ?? 'set_me',
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET ?? 'plz',
   PORT: process.env.PORT ?? '',
   SALT_ROUNDS: 10
 }

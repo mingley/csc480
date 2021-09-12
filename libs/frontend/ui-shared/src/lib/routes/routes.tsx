@@ -15,10 +15,10 @@ export function Routes(props: RoutesProps) {
         <div id="page-body">
           <Switch>
             <Route path="/" component={Loginpage} exact />
-            <Route path="/login-page" component={Loginpage} exact />
-            <Route path="/projectBoard/:name" component={Projectboard} exact />
+            <Route path="/login" component={Loginpage} exact />
+            <Route path="/project/:name" component={Projectboard} exact />
             <Route
-              path="/Project-Boards-List"
+              path="/project_list"
               component={Projectboardslist}
               exact
             />

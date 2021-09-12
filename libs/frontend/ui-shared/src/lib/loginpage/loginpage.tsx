@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Flex,
   FormControl,
@@ -9,22 +8,27 @@ import {
   Input,
   useColorMode,
   useColorModeValue,
+  useToast,
 } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import register from '../register/register';
 import axios from 'axios';
+import { useState } from 'react';
+import { useRecoilState } from 'recoil';
+import { userState } from '../dataset';
 
-/* eslint-disable-next-line */
-export interface LoginpageProps {}
+export function Loginpage() {
+  const toast = useToast();
 
-export function Loginpage(props: LoginpageProps) {
   const {
     handleSubmit,
     register,
-    setError,
     formState: { errors, isSubmitting },
   } = useForm();
+
+  const [user, setUser] = useRecoilState(userState);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const { toggleColorMode } = useColorMode();
 
@@ -35,14 +39,24 @@ export function Loginpage(props: LoginpageProps) {
       const res = await axios.post('http://localhost:3333/api/auth/login', {
         ...values,
       });
-      console.log('login success ', res.data);
+      if (res.status === 200) {
+        setUser(JSON.stringify(res.data.user));
+        localStorage.setItem('token', JSON.stringify(res.data.accessToken));
+        setIsLoggedIn(true);
+        console.log(user);
+      } else {
+        setIsLoggedIn(false);
+      }
     } catch (e: any) {
       const res = e.response.data;
       console.log('login error ', res.error);
       if (res.error) {
-        setError('email', {
-          type: 'server',
-          message: 'Username not found. Please register for access.',
+        toast({
+          title: 'Error',
+          description: `${res.error}`,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
         });
       }
     }
@@ -53,38 +67,27 @@ export function Loginpage(props: LoginpageProps) {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Flex direction="column" background={formBackground} p={12} rounded={6}>
           <Heading mb={6}>welcome.</Heading>
-          <FormControl isInvalid={errors.email}>
+          <FormControl isInvalid={errors.email} mb={3}>
             <FormLabel htmlFor="email">Email</FormLabel>
             <Input
               id="email"
               placeholder="email"
-              mb={3}
-              type="email"
               {...register('email', {
-                required: 'This is required',
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                  message: 'invalid email address',
-                },
+                required: 'Email required',
               })}
             />
             <FormErrorMessage>
               {errors.email && errors.email.message}
             </FormErrorMessage>
           </FormControl>
-          <FormControl isInvalid={errors.password}>
+          <FormControl isInvalid={errors.password} mb={3}>
             <FormLabel htmlFor="password">Password</FormLabel>
             <Input
               id="password"
               placeholder="password"
-              mb={3}
               type="password"
               {...register('password', {
-                required: 'This is required',
-                minLength: {
-                  value: 8,
-                  message: 'Minimum length should be 8',
-                },
+                required: 'Password required',
               })}
             />
             <FormErrorMessage>
@@ -107,6 +110,7 @@ export function Loginpage(props: LoginpageProps) {
           </Button>
         </Flex>
       </form>
+      {isLoggedIn ? <Redirect to="/project_list" /> : null}
     </Flex>
   );
 }

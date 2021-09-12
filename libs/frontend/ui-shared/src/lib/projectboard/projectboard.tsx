@@ -1,24 +1,19 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import dataset from '../dataset';
-import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
+import { dataset } from '../dataset';
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from 'react-beautiful-dnd';
 import { Navbar } from '../..';
 import AddColumnForm from '../add-column-form/AddColumnForm';
 import Column from '../column/Column';
 import InviteForm from '../invite-form/InviteForrm';
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import { snapshotViewportBox } from 'framer-motion';
-
-// interface ProjectBoardData {
-//   name: string;
-//   columns: {
-//     id: string {
-
-//     }
-//   }
-// }
 
 // @ts-ignore
 const Projectboard = ({ match }) => {
@@ -44,7 +39,11 @@ const Projectboard = ({ match }) => {
     console.log('You have added a user');
   };
 
-  const onDragEnd = (result: DropResult, columns: { [x: string]: any; }, setColumns: { (value: any): void; (arg0: any): void; }) => {
+  const onDragEnd = (
+    result: DropResult,
+    columns: { [x: string]: any },
+    setColumns: { (value: any): void; (arg0: any): void }
+  ) => {
     if (!result.destination) return;
     const { source, destination } = result;
 
@@ -98,10 +97,10 @@ const Projectboard = ({ match }) => {
           {Object.entries(columns).map(([columnId, column], index) => {
             return (
               <Flex direction="row" alignItems="center" key={columnId}>
-                {
-                  // column heading
-                }
-                <Heading>{column.title}</Heading>
+                <Heading>{
+                // @ts-ignore
+                column.title
+                }</Heading>
                 <Box m={5}>
                   <Droppable droppableId={columnId} key={columnId}>
                     {(provided, snapshot) => {
@@ -116,34 +115,41 @@ const Projectboard = ({ match }) => {
                           p={5}
                           width="20%"
                         >
-                          {column.tasks.map((task: { id: string; content: string; }, index: number) => {
-                            return (
-                              <Draggable
-                                key={task.id}
-                                draggableId={task.id}
-                                index={index}
-                              >
-                                {(provided, snapshot) => {
-                                  return (
-                                    <Box
-                                      ref={provided.innerRef}
-                                      {...provided.draggableProps}
-                                      {...provided.dragHandleProps}
-                                      mb={5}
-                                      p={5}
-                                      backgroundColor={
-                                        snapshot.isDragging
-                                          ? 'blue.100'
-                                          : 'gray.700'
-                                      }
-                                    >
-                                      {task.content}
-                                    </Box>
-                                  );
-                                }}
-                              </Draggable>
-                            );
-                          })}
+                          {
+                          // @ts-ignore
+                          column.tasks.map(
+                            (
+                              task: { id: string; content: string },
+                              index: number
+                            ) => {
+                              return (
+                                <Draggable
+                                  key={task.id}
+                                  draggableId={task.id}
+                                  index={index}
+                                >
+                                  {(provided, snapshot) => {
+                                    return (
+                                      <Box
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        mb={5}
+                                        p={5}
+                                        backgroundColor={
+                                          snapshot.isDragging
+                                            ? 'blue.100'
+                                            : 'gray.700'
+                                        }
+                                      >
+                                        {task.content}
+                                      </Box>
+                                    );
+                                  }}
+                                </Draggable>
+                              );
+                            }
+                          )}
                           {provided.placeholder}
                         </Box>
                       );
@@ -152,12 +158,6 @@ const Projectboard = ({ match }) => {
                 </Box>
               </Flex>
             );
-
-            // // @ts-ignore
-            // const column = data.columns[columnId];
-            // // @ts-ignore
-            // const tasks = column.taskIds.map((taskId) => data.tasks[taskId]);
-            // return <Column key={column.id} column={column} tasks={tasks} />;
           })}
         </DragDropContext>
       </Flex>

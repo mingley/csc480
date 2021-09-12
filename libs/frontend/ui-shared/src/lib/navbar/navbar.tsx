@@ -12,25 +12,25 @@ const nav = styled.div`
 export interface NavbarProps {}
 
 export function Navbar(props: NavbarProps) {
+
+  function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    console.log("logout");
+  }
+
   return (
     <Flex direction="row" justify="center" alignItems="center">
       <Box p="2">
         <Heading size="md">Espalier</Heading>
       </Box>
-      {/* <Spacer />
-      <Box p="2">
-        <Button mr={2}>
-          Add Column
-        </Button>
-        <Button>Invite User</Button>
-      </Box> */}
       <Spacer />
       <Box p="2">
         <Button colorScheme="teal" mr="4">
-          <Link to="/Project-Boards-List"> Projects </Link>
+          <Link to="/project_list"> Projects </Link>
         </Button>
-        <Button colorScheme="teal">
-          <Link to="/login-page">Logout</Link>
+        <Button colorScheme="teal" onClick={logout}>
+          <Link to="/login">Logout</Link>
         </Button>
       </Box>
     </Flex>
