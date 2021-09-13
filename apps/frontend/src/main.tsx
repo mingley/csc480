@@ -8,11 +8,9 @@ import App from './app/app';
 
 ReactDOM.render(
   <StrictMode>
-    <RecoilRoot>
-      <ChakraProvider>
-        <App />
-      </ChakraProvider>
-    </RecoilRoot>
+    <ChakraProvider>
+      <App />
+    </ChakraProvider>
   </StrictMode>,
   document.getElementById('root')
 );

@@ -7,19 +7,16 @@ import {
   sendRefreshToken,
   verifyRefreshToken,
 } from './tokens';
-import { AppConfiguration } from './config';
-import { PrismaClient } from '@prisma/client';
+import { AppConfiguration, prisma } from './config';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 router.post(
   '/register',
   async (req: Request, res: Response, next: NextFunction) => {
-
     const { email, password, firstName, lastName } = req.body;
 
-    const role = "ADMIN";
+    const role = 'ADMIN';
 
     const hashedPassword = await bcrypt.hash(
       password,
@@ -37,13 +34,13 @@ router.post(
         },
       });
 
-      if(!newUser) {
+      if (!newUser) {
         throw new Error('User not created');
       }
 
       return res.status(200).json({
         ...newUser,
-        password: "u wish lol",
+        password: 'u wish lol',
       });
     } catch (e) {
       return res.status(400).json({
@@ -64,6 +61,8 @@ router.post('/login', async (req: Request, res: Response) => {
         email: true,
         password: true,
         refreshToken: true,
+        project: true,
+        role: true,
       },
     });
 
@@ -82,11 +81,9 @@ router.post('/login', async (req: Request, res: Response) => {
         refreshToken: refreshToken,
       },
     });
-
-    console.log('user found and token refreshed');
-
     sendRefreshToken(res, refreshToken);
-    sendAccessToken(req, res, accessToken);
+    matchingUser.password = 'nope';
+    sendAccessToken(req, res, accessToken, matchingUser);
   } catch (err) {
     res.status(401).send({
       error: `${err.message}`,
@@ -127,7 +124,7 @@ router.post('/refresh_token', async (req: Request, res: Response) => {
   const accessToken = createAccessToken(user.id.toString());
   const refreshToken = createRefreshToken(user.id.toString());
 
-  console.log("updating token");
+  console.log('updating token');
   await prisma.user.update({
     where: {
       id: user.id,

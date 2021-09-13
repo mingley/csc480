@@ -1,8 +1,7 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from './config';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 // gets all users
 router.get('/', async (req: Request, res: Response) => {
@@ -10,14 +9,38 @@ router.get('/', async (req: Request, res: Response) => {
   res.json(users);
 });
 
-router.get('/get_all_projects', async (req: Request, res: Response) => {
-  // const projects = await prisma.project.findUnique({
-  //   where: {
-  //     id: req.query.id,
-  //   },
-  // });
-  
-  // res.json(projects);
+router.get('/projectboards/:userId', async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId;
+    const projectboards = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { project: true },
+    });
+    return res.status(200).json(projectboards);
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: err.message });
+  }
 });
+
+router.post(
+  '/projectboards/create',
+  async (req: Request, res: Response) => {
+    try {
+      const { name, userId } = req.body;
+
+      const projectboard = await prisma.project.create({
+        data: {
+          name,
+          creator: userId,
+        }
+      })
+      console.log(projectboard);
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({ error: err.message });
+    }
+  }
+);
 
 export const userRouter = router;

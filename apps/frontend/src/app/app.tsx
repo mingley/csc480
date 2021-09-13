@@ -1,7 +1,12 @@
 import { Routes } from '@group1/frontend/ui-shared';
+import { RecoilRoot } from 'recoil';
 
 export const App = () => {
-  return <Routes />;
+  return (
+    <RecoilRoot>
+      <Routes />;
+    </RecoilRoot>
+  );
 };
 
 export default App;

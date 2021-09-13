@@ -14,7 +14,7 @@ model User {
   last_name    String
   password     String
   refreshToken String?   @unique
-  project      Project[]
+  projects     Project[]
   role         UserRole
 }
 

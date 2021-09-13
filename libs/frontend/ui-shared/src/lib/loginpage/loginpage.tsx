@@ -15,7 +15,7 @@ import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { userState } from '../dataset';
+import { user as userAtom } from '../atoms';
 
 export function Loginpage() {
   const toast = useToast();
@@ -26,7 +26,7 @@ export function Loginpage() {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const [user, setUser] = useRecoilState(userState);
+  const [user, setUser] = useRecoilState(userAtom);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -40,10 +40,10 @@ export function Loginpage() {
         ...values,
       });
       if (res.status === 200) {
-        setUser(JSON.stringify(res.data.user));
-        localStorage.setItem('token', JSON.stringify(res.data.accessToken));
+        console.log(res.data);
+        setUser(res.data.user);
+        localStorage.setItem('token', res.data.accessToken);
         setIsLoggedIn(true);
-        console.log(user);
       } else {
         setIsLoggedIn(false);
       }

@@ -1,5 +1,3 @@
-import { atom } from 'recoil';
-
 export const dataset = [
   {
     name: 'Project Board 1',
@@ -57,8 +55,3 @@ export const dataset = [
     columnOrder: ['column-1', 'column-2', 'column-3'],
   },
 ];
-
-export const userState = atom({
-  key: 'userState',
-  default: '',
-});
