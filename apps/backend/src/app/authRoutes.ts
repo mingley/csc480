@@ -1,11 +1,10 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response } from 'express';
 import * as bcrypt from 'bcrypt';
 import {
   createAccessToken,
   createRefreshToken,
   sendAccessToken,
   sendRefreshToken,
-  verifyRefreshToken,
 } from './tokens';
 import { AppConfiguration, prisma } from './config';
 
@@ -13,7 +12,7 @@ const router = Router();
 
 router.post(
   '/register',
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const { email, password, firstName, lastName } = req.body;
 
     const role = 'ADMIN';
