@@ -4,8 +4,18 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { user as userAtom, projectboards as projectBoardAtom } from '../atoms';
-import { Button, Flex, Heading, List, ListIcon, ListItem, StackDivider, VStack } from '@chakra-ui/react';
+import {
+  Button,
+  Flex,
+  Heading,
+  List,
+  ListIcon,
+  ListItem,
+  StackDivider,
+  VStack,
+} from '@chakra-ui/react';
 import { MdWork } from 'react-icons/md';
+import NewProjectModal from '../new-project-modal/new-project-modal';
 
 export function Projectboardslist() {
   const user = useRecoilValue(userAtom);
@@ -19,20 +29,13 @@ export function Projectboardslist() {
       });
   }, [projectboards, setProjectboards, user]);
 
-  const newProject = async () => {
-    const req = await axios.post('http://localhost:3333/api/users/projectboards/create', {
-      userId: user.id,
-      name: 'New Project',
-    });
-  }
-
   return (
     <>
       <Navbar />
       <Flex height="80vh" alignItems="center" justify="center">
         <VStack divider={<StackDivider borderColor="gray.200" />}>
           <Heading mb={5} size="md">
-            Welcome {user}! Here are your project boards:
+            Welcome {user.id}! Here are your project boards:
           </Heading>
           <List spacing={3}>
             {projectboards?.map((projectboard) => (
@@ -44,9 +47,7 @@ export function Projectboardslist() {
               </ListItem>
             ))}
           </List>
-          <Button onClick={newProject}>
-              Start a new Project
-          </Button>
+          <NewProjectModal />
         </VStack>
       </Flex>
     </>

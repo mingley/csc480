@@ -32,10 +32,10 @@ router.post(
       const projectboard = await prisma.project.create({
         data: {
           name,
-          creator: userId,
+          creator: { connect: { id: userId } },
         }
       })
-      console.log(projectboard);
+      res.status(200).json(projectboard);
     } catch (err) {
       console.log(err);
       return res.status(400).json({ error: err.message });
