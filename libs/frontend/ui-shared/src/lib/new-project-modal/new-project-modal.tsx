@@ -39,7 +39,7 @@ export function NewProjectModal(props: NewProjectModalProps) {
   const onSubmit = async (values: FormInput) => {
     //make new project
     const res = await axios.post(
-      'http://localhost:3333/api/users/projectboards/create',
+      'http://localhost:3333/api/users/project/create',
       {
         userId: user.id,
         name: values.name,

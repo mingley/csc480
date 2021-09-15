@@ -16,7 +16,7 @@ export function Routes(props: RoutesProps) {
           <Switch>
             <Route path="/" component={Loginpage} exact />
             <Route path="/login" component={Loginpage} exact />
-            <Route path="/project/:name" component={Projectboard} exact />
+            <Route path="/project/:projectId" component={Projectboard} exact />
             <Route
               path="/project_list"
               component={Projectboardslist}

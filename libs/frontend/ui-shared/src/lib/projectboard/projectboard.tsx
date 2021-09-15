@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { dataset } from '../dataset';
 import {
   DragDropContext,
@@ -12,22 +11,45 @@ import { Navbar } from '../..';
 import AddColumnForm from '../add-column-form/AddColumnForm';
 import Column from '../column/Column';
 import InviteForm from '../invite-form/InviteForrm';
-import { Box, Button, Flex, Heading } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, HStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import {
+  user as userAtom,
+  current_project as currentProjectAtom,
+  project_columns as projectColumnsAtom,
+} from '../atoms';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
+import NewTaskModal from '../new-task-modal/new-task-modal';
 
 // @ts-ignore
-const Projectboard = ({ match }) => {
-  const name = match.params.name;
-  const [columns, setColumns] = useState<any>();
+const Projectboard = () => {
+  // @ts-ignore
+  const { projectId } = useParams();
+
+  const user = useRecoilValue(userAtom);
+
+  const currentProject = useRecoilValue(currentProjectAtom);
+  const [columns, setColumns] = useRecoilState(projectColumnsAtom);
 
   const [isOpen, setIsOpen] = useState(false);
   const [inviteFormisOpen, inviteFormsetIsOpen] = useState(false);
 
   useEffect(() => {
-    const workspace = dataset.find((workspace) => workspace.name === name);
-    setColumns(workspace?.columns);
-    console.log(columns);
-  }, [columns, name]);
+    axios
+      .get(`/api/users/project/${projectId}/columns`)
+      .then((res) => {
+        console.log(res.data);
+        setColumns(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // const workspace = dataset.find((workspace) => workspace.name === name);
+    // setColumns(workspace?.columns);
+  }, [ setColumns, currentProject, projectId]);
 
   const addColumn = () => {
     setIsOpen(!isOpen);
@@ -96,12 +118,22 @@ const Projectboard = ({ match }) => {
         >
           {Object.entries(columns).map(([columnId, column], index) => {
             return (
-              <Flex direction="row" alignItems="center" key={columnId}>
-                <Heading>{
-                // @ts-ignore
-                column.title
-                }</Heading>
-                <Box m={5}>
+              <Flex
+                direction="column"
+                p={4}
+                alignItems="center"
+                key={columnId}
+                border="2px"
+                height="100%"
+                width="100%"
+              >
+                <Heading>
+                  {
+                    // @ts-ignore
+                    column.title
+                  }
+                </Heading>
+                  <Box m={5}>
                   <Droppable droppableId={columnId} key={columnId}>
                     {(provided, snapshot) => {
                       // column tasks
@@ -116,46 +148,48 @@ const Projectboard = ({ match }) => {
                           width="20%"
                         >
                           {
-                          // @ts-ignore
-                          column.tasks.map(
-                            (
-                              task: { id: string; content: string },
-                              index: number
-                            ) => {
-                              return (
-                                <Draggable
-                                  key={task.id}
-                                  draggableId={task.id}
-                                  index={index}
-                                >
-                                  {(provided, snapshot) => {
-                                    return (
-                                      <Box
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        mb={5}
-                                        p={5}
-                                        backgroundColor={
-                                          snapshot.isDragging
-                                            ? 'blue.100'
-                                            : 'gray.700'
-                                        }
-                                      >
-                                        {task.content}
-                                      </Box>
-                                    );
-                                  }}
-                                </Draggable>
-                              );
-                            }
-                          )}
+                            // @ts-ignore
+                            column.tasks?.map(
+                              (
+                                task: { id: string; content: string },
+                                index: number
+                              ) => {
+                                return (
+                                  <Draggable
+                                    key={task.id}
+                                    draggableId={task.id}
+                                    index={index}
+                                  >
+                                    {(provided, snapshot) => {
+                                      return (
+                                        <Box
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          mb={5}
+                                          p={5}
+                                          backgroundColor={
+                                            snapshot.isDragging
+                                              ? 'blue.100'
+                                              : 'gray.700'
+                                          }
+                                        >
+                                          {task.content}
+                                        </Box>
+                                      );
+                                    }}
+                                  </Draggable>
+                                );
+                              }
+                            )
+                          }
                           {provided.placeholder}
                         </Box>
                       );
                     }}
                   </Droppable>
                 </Box>
+                <NewTaskModal columnId={column.id} />
               </Flex>
             );
           })}
@@ -167,45 +201,8 @@ const Projectboard = ({ match }) => {
         </Button>
         <Button onClick={inviteUser}>Invite User</Button>
       </Flex>
-      {/* {isOpen && (
-        <AddColumnForm setIsOpen={setIsOpen} data={data} setData={setData} />
-      )}
-      {inviteFormisOpen && (
-        <InviteForm
-          setIsOpen={inviteFormsetIsOpen}
-          data={data}
-          setData={setData}
-        />
-      )} */}
     </Box>
   );
 };
 
 export default Projectboard;
-
-// <>
-//   {isOpen && <AddColumnForm
-//   handleClose={addColumn}
-// />}
-// {inviteFormisOpen && <InviteForm
-//   handleClose={inviteUser}
-// />}
-// <h2>{name}</h2>
-// <Button onClick={addColumn}>Add Column</Button>
-// <Button onClick={inviteUser}>Invite User</Button>
-// <DragDropContext onDragEnd={onDragEnd}>
-//   <Droppable droppableId='all-columns' direction='horizontal' type='column'>
-//     {(provided) => (
-//       <Container {...provided.droppableProps} ref={provided.innerRef}>
-//         {data.columnOrder.map((id, index) => {
-//           const column = data.columns[id]
-//           const tasks = column.taskIds.map(taskId => data.tasks[taskId])
-
-//           return <Column key={column.id} column={column} tasks={tasks} index={index} />
-//         })}
-//         {provided.placeholder}
-//       </Container>
-//     )}
-//   </Droppable>
-// </DragDropContext>
-// </>
