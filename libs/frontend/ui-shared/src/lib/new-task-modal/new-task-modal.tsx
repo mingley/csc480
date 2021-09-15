@@ -25,6 +25,7 @@ export interface NewTaskModalProps {
 }
 
 export function NewTaskModal(props: NewTaskModalProps) {
+
   const columnId = props.columnId;
 
   const [columns, setColumns] = useRecoilState(columnAtom);

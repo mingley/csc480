@@ -25,6 +25,10 @@ import NewTaskModal from '../new-task-modal/new-task-modal';
 
 // @ts-ignore
 const Projectboard = () => {
+  function removeItemAtIndex(arr: any, index: any) {
+    return [...arr.slice(0, index), ...arr.slice(index + 1)];
+  }
+
   // @ts-ignore
   const { projectId } = useParams();
 
@@ -46,10 +50,7 @@ const Projectboard = () => {
       .catch((err) => {
         console.log(err);
       });
-
-    // const workspace = dataset.find((workspace) => workspace.name === name);
-    // setColumns(workspace?.columns);
-  }, [ setColumns, currentProject, projectId]);
+  }, [setColumns, currentProject, projectId]);
 
   const addColumn = () => {
     setIsOpen(!isOpen);
@@ -59,6 +60,34 @@ const Projectboard = () => {
   const inviteUser = () => {
     inviteFormsetIsOpen(!inviteFormisOpen);
     console.log('You have added a user');
+  };
+
+  const deleteTask = (taskId: string, columnId: string) => {
+    axios
+      .delete(`/api/users/project/task/${taskId}`)
+      .then((res) => {
+        console.log(res);
+        // find column and remove task
+        const index = columns.findIndex((column) => column.id === columnId);
+
+        const newColumns = columns.map((column) => {
+          if (column.id === columnId) {
+            return {
+              ...column,
+              tasks: removeItemAtIndex(
+                column.tasks,
+                column.tasks.findIndex((task) => task.id === taskId)
+              ),
+            };
+          } else {
+            return column;
+          }
+        });
+        setColumns(newColumns);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const onDragEnd = (
@@ -120,7 +149,7 @@ const Projectboard = () => {
             return (
               <Flex
                 direction="column"
-                p={4}
+                p={2}
                 alignItems="center"
                 key={columnId}
                 border="2px"
@@ -133,7 +162,7 @@ const Projectboard = () => {
                     column.title
                   }
                 </Heading>
-                  <Box m={5}>
+                <Box m={1}>
                   <Droppable droppableId={columnId} key={columnId}>
                     {(provided, snapshot) => {
                       // column tasks
@@ -144,14 +173,19 @@ const Projectboard = () => {
                           background={
                             snapshot.isDraggingOver ? 'blue.100' : 'gray.700'
                           }
-                          p={5}
-                          width="20%"
+                          p={2}
+                          width="100%"
                         >
                           {
                             // @ts-ignore
                             column.tasks?.map(
                               (
-                                task: { id: string; content: string },
+                                task: {
+                                  id: string;
+                                  content: string;
+                                  title: string;
+                                  status: string;
+                                },
                                 index: number
                               ) => {
                                 return (
@@ -166,15 +200,32 @@ const Projectboard = () => {
                                           ref={provided.innerRef}
                                           {...provided.draggableProps}
                                           {...provided.dragHandleProps}
-                                          mb={5}
+                                          mb={1}
                                           p={5}
+                                          width="100%"
+                                          height="100%"
+                                          border="1px"
                                           backgroundColor={
                                             snapshot.isDragging
                                               ? 'blue.100'
                                               : 'gray.700'
                                           }
                                         >
-                                          {task.content}
+                                          <Box as="h2" m={3}>
+                                            Title: {task.title}
+                                          </Box>
+                                          <Box as="h6">
+                                            Content: {task.content}
+                                          </Box>
+                                          <Box>
+                                            <Button
+                                              onClick={() =>
+                                                deleteTask(task.id, column.id)
+                                              }
+                                            >
+                                              Delete me
+                                            </Button>
+                                          </Box>
                                         </Box>
                                       );
                                     }}

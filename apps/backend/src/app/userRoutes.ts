@@ -111,4 +111,22 @@ router.post('/project/task/create', async (req: Request, res: Response) => {
   }
 });
 
+// delete a task
+router.delete('/project/task/:taskId', async (req: Request, res: Response) => {
+  try {
+    const taskId = req.params.taskId;
+
+    await prisma.task.delete({
+      where: { id: taskId },
+    });
+
+    res.status(200).json({ message: 'Task deleted' });
+
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: err.message });
+  }
+});
+
 export const userRouter = router;
