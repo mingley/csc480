@@ -23,6 +23,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import NewTaskModal from '../new-task-modal/new-task-modal';
 
+//@ts-ignore
 function replaceItemAtIndex(arr, index, newValue) {
   return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
 }
@@ -95,7 +96,6 @@ const Projectboard = () => {
   };
 
   const onDragEnd = (result: DropResult) => {
-    console.log(result);
     const { destination, source, draggableId, type } = result;
     //If there is no destination
     if (!destination) {
@@ -116,19 +116,14 @@ const Projectboard = () => {
     const finishColumn = columns[destination.droppableId];
 
     //if task is moved within the same column
-    if(source.droppableId === destination.droppableId) {
+    if (source.droppableId === destination.droppableId) {
       const newTaskIds = Array.from(startColumn.tasks);
-
-      console.log(newTaskIds);
 
       const task = newTaskIds[source.index];
 
       newTaskIds.splice(source.index, 1);
 
-      console.log("first splice", newTaskIds);
       newTaskIds.splice(destination.index, 0, task);
-
-      console.log("second splice", newTaskIds);
 
       const newColumn = {
         ...startColumn,
@@ -137,6 +132,7 @@ const Projectboard = () => {
 
       const newColumns = [...columns];
 
+      // @ts-ignore
       newColumns[source.droppableId] = newColumn;
 
       setColumns(newColumns);
@@ -165,10 +161,14 @@ const Projectboard = () => {
 
     //update columns list
     const updatedColumns = [...columns];
+    // @ts-ignore
     updatedColumns[source.droppableId] = newStartColumn;
+    // @ts-ignore
     updatedColumns[destination.droppableId] = newFinishColumn;
 
     setColumns(updatedColumns);
+
+    return;
   };
 
   return (
