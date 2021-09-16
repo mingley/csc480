@@ -23,12 +23,16 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import NewTaskModal from '../new-task-modal/new-task-modal';
 
+function replaceItemAtIndex(arr, index, newValue) {
+  return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
+}
+
+function removeItemAtIndex(arr: any, index: any) {
+  return [...arr.slice(0, index), ...arr.slice(index + 1)];
+}
+
 // @ts-ignore
 const Projectboard = () => {
-  function removeItemAtIndex(arr: any, index: any) {
-    return [...arr.slice(0, index), ...arr.slice(index + 1)];
-  }
-
   // @ts-ignore
   const { projectId } = useParams();
 
@@ -90,45 +94,81 @@ const Projectboard = () => {
       });
   };
 
-  const onDragEnd = (
-    result: DropResult,
-    columns: { [x: string]: any },
-    setColumns: { (value: any): void; (arg0: any): void }
-  ) => {
-    if (!result.destination) return;
-    const { source, destination } = result;
-
-    if (source.droppableId !== destination.droppableId) {
-      const sourceColumn = columns[source.droppableId];
-      const destColumn = columns[destination.droppableId];
-      const sourceItems = [...sourceColumn.items];
-      const destItems = [...destColumn.items];
-      const [removed] = sourceItems.splice(source.index, 1);
-      destItems.splice(destination.index, 0, removed);
-      setColumns({
-        ...columns,
-        [source.droppableId]: {
-          ...sourceColumn,
-          items: sourceItems,
-        },
-        [destination.droppableId]: {
-          ...destColumn,
-          items: destItems,
-        },
-      });
-    } else {
-      const column = columns[source.droppableId];
-      const copiedItems = [...column.items];
-      const [removed] = copiedItems.splice(source.index, 1);
-      copiedItems.splice(destination.index, 0, removed);
-      setColumns({
-        ...columns,
-        [source.droppableId]: {
-          ...column,
-          items: copiedItems,
-        },
-      });
+  const onDragEnd = (result: DropResult) => {
+    console.log(result);
+    const { destination, source, draggableId, type } = result;
+    //If there is no destination
+    if (!destination) {
+      return;
     }
+
+    //If the source and destination is the same
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    //@ts-ignore
+    const startColumn = columns[source.droppableId];
+    //@ts-ignore
+    const finishColumn = columns[destination.droppableId];
+
+    //if task is moved within the same column
+    if(source.droppableId === destination.droppableId) {
+      const newTaskIds = Array.from(startColumn.tasks);
+
+      console.log(newTaskIds);
+
+      const task = newTaskIds[source.index];
+
+      newTaskIds.splice(source.index, 1);
+
+      console.log("first splice", newTaskIds);
+      newTaskIds.splice(destination.index, 0, task);
+
+      console.log("second splice", newTaskIds);
+
+      const newColumn = {
+        ...startColumn,
+        tasks: newTaskIds,
+      };
+
+      const newColumns = [...columns];
+
+      newColumns[source.droppableId] = newColumn;
+
+      setColumns(newColumns);
+
+      return;
+    }
+
+    const tasks = finishColumn.tasks;
+
+    //grab the task that is being moved
+    const movedTask = startColumn.tasks[source.index];
+    // move that task into the new column
+    const newTasks = replaceItemAtIndex(tasks, destination.index, movedTask);
+    // remove the task from the old column
+    const oldTasks = removeItemAtIndex(startColumn.tasks, source.index);
+
+    const newFinishColumn = {
+      ...finishColumn,
+      tasks: newTasks,
+    };
+
+    const newStartColumn = {
+      ...startColumn,
+      tasks: oldTasks,
+    };
+
+    //update columns list
+    const updatedColumns = [...columns];
+    updatedColumns[source.droppableId] = newStartColumn;
+    updatedColumns[destination.droppableId] = newFinishColumn;
+
+    setColumns(updatedColumns);
   };
 
   return (
@@ -142,9 +182,7 @@ const Projectboard = () => {
         background="gray.700"
         rounded={6}
       >
-        <DragDropContext
-          onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
-        >
+        <DragDropContext onDragEnd={(result) => onDragEnd(result)}>
           {Object.entries(columns).map(([columnId, column], index) => {
             return (
               <Flex
