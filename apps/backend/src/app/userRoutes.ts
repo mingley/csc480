@@ -6,10 +6,12 @@ const router = Router();
 // get all projects for a user
 router.get('/project/:userId', async (req: Request, res: Response) => {
   try {
+
     const userId = req.params.userId;
+
     const projectboards = await prisma.user.findUnique({
       where: { id: userId },
-      select: { project: true },
+      select: { projects: true },
     });
     return res.status(200).json(projectboards);
   } catch (err) {
@@ -52,6 +54,8 @@ router.post('/project/create', async (req: Request, res: Response) => {
 router.delete('/project/:projectId', async (req: Request, res: Response) => {
   try {
     const projectId = req.params.projectId;
+
+    console.log(projectId);
 
     await prisma.project.delete({
       where: { id: projectId },

@@ -41,7 +41,6 @@ export function Loginpage() {
         ...values,
       });
       if (res.status === 200) {
-        console.log(res.data);
         setUser(res.data.user);
         localStorage.setItem('token', res.data.accessToken);
         setIsLoggedIn(true);

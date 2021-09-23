@@ -16,14 +16,17 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { user as userAtom } from '../atoms';
-import { useRecoilValue } from 'recoil';
+import { user as userAtom, projectboards as projectBoardAtom } from '../atoms';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 /* eslint-disable-next-line */
 export interface NewProjectModalProps {}
 
 export function NewProjectModal(props: NewProjectModalProps) {
   const user = useRecoilValue(userAtom);
+
+  const setProjectboards = useSetRecoilState(projectBoardAtom);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
   const {
@@ -69,6 +72,16 @@ export function NewProjectModal(props: NewProjectModalProps) {
         },
       });
     }
+
+
+    const {id, name} = res.data;
+    // set projectboards with new project
+    const newProjectboard = {
+      id,
+      name
+    }
+
+    setProjectboards((projectboards) => [...projectboards, newProjectboard]);
   };
 
   return (

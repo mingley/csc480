@@ -242,7 +242,8 @@ const Projectboard = () => {
                                           p={5}
                                           width="100%"
                                           height="100%"
-                                          border="1px"
+                                          border="2px"
+                                          rounded={6}
                                           backgroundColor={
                                             snapshot.isDragging
                                               ? 'blue.100'

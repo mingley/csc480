@@ -60,7 +60,7 @@ router.post('/login', async (req: Request, res: Response) => {
         email: true,
         password: true,
         refreshToken: true,
-        project: true,
+        projects: true,
         role: true,
       },
     });

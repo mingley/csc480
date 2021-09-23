@@ -8,12 +8,13 @@ CREATE TYPE "TaskStatus" AS ENUM ('TODO', 'IN_PROGRESS', 'REVIEW', 'DONE');
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "name" TEXT,
+    "first_name" TEXT NOT NULL,
+    "last_name" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "refreshToken" TEXT,
     "role" "UserRole" NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -24,7 +25,7 @@ CREATE TABLE "Project" (
     "authorized_users" TEXT[],
     "columnOrder" TEXT[],
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Project_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -33,7 +34,7 @@ CREATE TABLE "Column" (
     "projectId" TEXT NOT NULL,
     "title" TEXT,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Column_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -41,25 +42,25 @@ CREATE TABLE "Task" (
     "id" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
-    "title" TEXT,
+    "title" TEXT NOT NULL,
     "status" "TaskStatus" NOT NULL,
-    "content" TEXT,
+    "content" TEXT NOT NULL,
     "columnId" TEXT NOT NULL,
 
-    PRIMARY KEY ("id")
+    CONSTRAINT "Task_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User.email_unique" ON "User"("email");
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User.refreshToken_unique" ON "User"("refreshToken");
+CREATE UNIQUE INDEX "User_refreshToken_key" ON "User"("refreshToken");
 
 -- AddForeignKey
-ALTER TABLE "Project" ADD FOREIGN KEY ("creatorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Project" ADD CONSTRAINT "Project_creatorId_fkey" FOREIGN KEY ("creatorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Column" ADD FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Column" ADD CONSTRAINT "Column_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Task" ADD FOREIGN KEY ("columnId") REFERENCES "Column"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Task" ADD CONSTRAINT "Task_columnId_fkey" FOREIGN KEY ("columnId") REFERENCES "Column"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

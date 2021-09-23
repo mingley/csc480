@@ -30,16 +30,20 @@ export function Projectboardslist() {
     axios
       .get(`http://localhost:3333/api/users/project/${user.id}`)
       .then((res) => {
-        setProjectboards(res.data.project);
+        setProjectboards(res.data.projects);
       });
-  }, [projectboards, setProjectboards, user]);
+  }, [setProjectboards, user]);
 
   const deleteProject = (id: string) => {
     axios
       .delete(`http://localhost:3333/api/users/project/${id}`)
       .then((res) => {
-        setProjectboards(projectboards.filter((project) => project.id !== id));
-      });
+        if (res.status === 200) {
+          setProjectboards(
+            projectboards.filter((project) => project.id !== id)
+          );
+        }
+      }).catch(err => console.log(err));
   };
 
   return (
