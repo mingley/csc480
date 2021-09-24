@@ -269,11 +269,14 @@ const Projectboard = () => {
                                                 : 'gray.700'
                                             }
                                           >
-                                            <Box as="h2" m={3}>
+                                            <Box as="h2">
                                               Title: {task.title}
                                             </Box>
                                             <Box as="h6">
                                               Content: {task.content}
+                                            </Box>
+                                            <Box as="h6">
+                                              Points: {task.points}
                                             </Box>
                                             <Box mt={3}>
                                               <Button

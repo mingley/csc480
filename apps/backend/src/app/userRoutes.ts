@@ -95,7 +95,7 @@ router.get(
   }
 );
 
-// add a new task to a column
+// create a new task
 router.post('/project/task/create', async (req: Request, res: Response) => {
   try {
     const { title, content, columnId, userId } = req.body;

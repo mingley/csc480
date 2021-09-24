@@ -57,13 +57,12 @@ export function Projectboardslist() {
       <Flex height="80vh" alignItems="start" justify="center" overflow="auto">
         <HStack spacing={100}>
           <Box>
-            <Heading as="h1" size="lg">
-              Tasks
-            </Heading>
+            <VStack>
+              <Heading as="h1" size="lg">
+                Tasks
+              </Heading>
+            </VStack>
           </Box>
-          <VStack>
-
-          </VStack>
           <VStack divider={<StackDivider borderColor="gray.200" />}>
             <Heading as="h1" size="lg">
               Projects
@@ -72,7 +71,7 @@ export function Projectboardslist() {
               <VStack divider={<StackDivider borderColor="gray.200" />}>
                 {projectboards?.map((projectboard) => (
                   <ListItem key={projectboard.id}>
-                    <HStack spacing={5}>
+                    <HStack spacing={10}>
                       <ListIcon as={MdWork} />
                       <Link
                         to={`/project/${projectboard.id}`}

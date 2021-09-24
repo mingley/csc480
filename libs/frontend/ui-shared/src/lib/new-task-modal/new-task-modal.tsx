@@ -41,11 +41,11 @@ export function NewTaskModal(props: NewTaskModalProps) {
   const onSubmit = async (values: any) => {
     const { title, content } = values;
     //make new project
-    const res = await axios.post(`/api/users/project/task/create/${user.id}`, {
+    const res = await axios.post(`/api/users/project/task/create`, {
       title,
       content,
       columnId,
-      id: user.id,
+      userId: user.id,
     });
 
     if (res.status === 200) {
