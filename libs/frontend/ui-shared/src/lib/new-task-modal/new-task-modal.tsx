@@ -16,8 +16,8 @@ import {
 } from '@chakra-ui/react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { useRecoilState } from 'recoil';
-import { project_columns as columnAtom } from '../atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { project_columns as columnAtom, user as userAtom } from '../atoms';
 
 /* eslint-disable-next-line */
 export interface NewTaskModalProps {
@@ -25,9 +25,9 @@ export interface NewTaskModalProps {
 }
 
 export function NewTaskModal(props: NewTaskModalProps) {
-
   const columnId = props.columnId;
 
+  const user = useRecoilValue(userAtom);
   const [columns, setColumns] = useRecoilState(columnAtom);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -41,10 +41,11 @@ export function NewTaskModal(props: NewTaskModalProps) {
   const onSubmit = async (values: any) => {
     const { title, content } = values;
     //make new project
-    const res = await axios.post('/api/users/project/task/create', {
+    const res = await axios.post(`/api/users/project/task/create/${user.id}`, {
       title,
       content,
       columnId,
+      id: user.id,
     });
 
     if (res.status === 200) {

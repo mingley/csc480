@@ -81,6 +81,8 @@ export function NewProjectModal(props: NewProjectModalProps) {
       name
     }
 
+    console.log(newProjectboard);
+
     setProjectboards((projectboards) => [...projectboards, newProjectboard]);
   };
 

@@ -3,17 +3,20 @@ import { prisma } from './config';
 
 const router = Router();
 
-// get all projects for a user
+// get all projects and tasks for a user
 router.get('/project/:userId', async (req: Request, res: Response) => {
   try {
-
     const userId = req.params.userId;
 
-    const projectboards = await prisma.user.findUnique({
+    const projectboardsAndTasks = await prisma.user.findUnique({
       where: { id: userId },
-      select: { projects: true },
+      select: {
+        projects: true,
+        assigned_tasks: true,
+      },
     });
-    return res.status(200).json(projectboards);
+
+    return res.status(200).json({ projectboardsAndTasks });
   } catch (err) {
     console.log(err);
     return res.status(400).json({ error: err.message });
@@ -95,7 +98,7 @@ router.get(
 // add a new task to a column
 router.post('/project/task/create', async (req: Request, res: Response) => {
   try {
-    const { title, content, columnId } = req.body;
+    const { title, content, columnId, userId } = req.body;
 
     const task = await prisma.task.create({
       data: {
@@ -103,6 +106,7 @@ router.post('/project/task/create', async (req: Request, res: Response) => {
         content,
         status: 'TODO',
         column: { connect: { id: columnId } },
+        assigned_to: { connect: { id: userId } },
       },
     });
 

@@ -25,7 +25,7 @@ import NewTaskModal from '../new-task-modal/new-task-modal';
 
 //@ts-ignore
 function replaceItemAtIndex(arr, index, newValue) {
-  return [...arr.slice(0, index), newValue, ...arr.slice(index + 1)];
+  return [...arr.slice(0, index), newValue, ...arr.slice(index)];
 }
 
 function removeItemAtIndex(arr: any, index: any) {
@@ -96,7 +96,13 @@ const Projectboard = () => {
   };
 
   const onDragEnd = (result: DropResult) => {
+
+
+
     const { destination, source, draggableId, type } = result;
+
+    console.log(destination, source);
+
     //If there is no destination
     if (!destination) {
       return;
@@ -140,12 +146,21 @@ const Projectboard = () => {
       return;
     }
 
-    const tasks = finishColumn.tasks;
+    const tasks = Array.from(finishColumn.tasks);
+
+    console.log("old tasks => ",tasks);
 
     //grab the task that is being moved
     const movedTask = startColumn.tasks[source.index];
+
+    console.log("moved task => ", movedTask);
+
     // move that task into the new column
     const newTasks = replaceItemAtIndex(tasks, destination.index, movedTask);
+
+    console.log("new tasks array => ", newTasks);
+
+
     // remove the task from the old column
     const oldTasks = removeItemAtIndex(startColumn.tasks, source.index);
 
@@ -193,6 +208,7 @@ const Projectboard = () => {
                 border="2px"
                 height="100%"
                 width="100%"
+                overflow="auto"
               >
                 <Heading>
                   {
@@ -200,81 +216,85 @@ const Projectboard = () => {
                     column.title
                   }
                 </Heading>
-                <Box m={1}>
+                <Box m={1} width="100%">
                   <Droppable droppableId={columnId} key={columnId}>
                     {(provided, snapshot) => {
                       // column tasks
                       return (
-                        <Box
-                          {...provided.droppableProps}
-                          ref={provided.innerRef}
-                          background={
-                            snapshot.isDraggingOver ? 'blue.100' : 'gray.700'
-                          }
-                          p={2}
-                          width="100%"
-                        >
-                          {
-                            // @ts-ignore
-                            column.tasks?.map(
-                              (
-                                task: {
-                                  id: string;
-                                  content: string;
-                                  title: string;
-                                  status: string;
-                                },
-                                index: number
-                              ) => {
-                                return (
-                                  <Draggable
-                                    key={task.id}
-                                    draggableId={task.id}
-                                    index={index}
-                                  >
-                                    {(provided, snapshot) => {
-                                      return (
-                                        <Box
-                                          ref={provided.innerRef}
-                                          {...provided.draggableProps}
-                                          {...provided.dragHandleProps}
-                                          mb={1}
-                                          p={5}
-                                          width="100%"
-                                          height="100%"
-                                          border="2px"
-                                          rounded={6}
-                                          backgroundColor={
-                                            snapshot.isDragging
-                                              ? 'blue.100'
-                                              : 'gray.700'
-                                          }
-                                        >
-                                          <Box as="h2" m={3}>
-                                            Title: {task.title}
+                        <HStack>
+                          <Box
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            background={
+                              snapshot.isDraggingOver ? 'blue.100' : 'gray.700'
+                            }
+                            p={2}
+                            width="100%"
+                          >
+                            {
+                              // @ts-ignore
+                              column.tasks?.map(
+                                (
+                                  task: {
+                                    id: string;
+                                    content: string;
+                                    title: string;
+                                    status: string;
+                                    points: number;
+                                  },
+                                  index: number
+                                ) => {
+                                  return (
+                                    <Draggable
+                                      key={task.id}
+                                      draggableId={task.id}
+                                      index={index}
+                                    >
+                                      {(provided, snapshot) => {
+                                        return (
+                                          <Box
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                            mb={1}
+                                            p={1}
+                                            width="100%"
+                                            height="100%"
+                                            border="2px"
+                                            rounded={6}
+                                            spacing={1}
+                                            backgroundColor={
+                                              snapshot.isDragging
+                                                ? 'blue.100'
+                                                : 'gray.700'
+                                            }
+                                          >
+                                            <Box as="h2" m={3}>
+                                              Title: {task.title}
+                                            </Box>
+                                            <Box as="h6">
+                                              Content: {task.content}
+                                            </Box>
+                                            <Box mt={3}>
+                                              <Button
+                                                onClick={() =>
+                                                  deleteTask(task.id, column.id)
+                                                }
+                                              >
+                                                Delete me
+                                              </Button>
+                                            </Box>
                                           </Box>
-                                          <Box as="h6">
-                                            Content: {task.content}
-                                          </Box>
-                                          <Box>
-                                            <Button
-                                              onClick={() =>
-                                                deleteTask(task.id, column.id)
-                                              }
-                                            >
-                                              Delete me
-                                            </Button>
-                                          </Box>
-                                        </Box>
-                                      );
-                                    }}
-                                  </Draggable>
-                                );
-                              }
-                            )
-                          }
-                          {provided.placeholder}
-                        </Box>
+                                        );
+                                      }}
+                                    </Draggable>
+                                  );
+                                }
+                              )
+                            }
+                            {provided.placeholder}
+                          </Box>
+                        </HStack>
                       );
                     }}
                   </Droppable>

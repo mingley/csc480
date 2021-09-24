@@ -9,9 +9,12 @@ import {
   current_project as currentProjectAtom,
 } from '../atoms';
 import {
+  Box,
   Button,
   Flex,
   Heading,
+  HStack,
+  Icon,
   List,
   ListIcon,
   ListItem,
@@ -30,7 +33,8 @@ export function Projectboardslist() {
     axios
       .get(`http://localhost:3333/api/users/project/${user.id}`)
       .then((res) => {
-        setProjectboards(res.data.projects);
+        console.log(res.data);
+        setProjectboards(res.data.projectboardsAndTasks.projects);
       });
   }, [setProjectboards, user]);
 
@@ -43,43 +47,55 @@ export function Projectboardslist() {
             projectboards.filter((project) => project.id !== id)
           );
         }
-      }).catch(err => console.log(err));
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
     <>
       <Navbar />
-      <Flex height="80vh" alignItems="center" justify="center">
-        <VStack divider={<StackDivider borderColor="gray.200" />}>
-          <Heading mb={5} size="md">
-            Welcome {user.id}! Here are your project boards:
-          </Heading>
-          <List spacing={3}>
-            <VStack divider={<StackDivider borderColor="gray.200" />}>
-              {projectboards?.map((projectboard) => (
-                <ListItem key={projectboard.id}>
-                  <ListIcon as={MdWork} />
-                  <Link
-                    to={`/project/${projectboard.id}`}
-                    onClick={() =>
-                      setCurrentProjectSelection({
-                        id: projectboard.id,
-                        name: projectboard.name,
-                      })
-                    }
-                  >
-                    {projectboard.name}
-                  </Link>
-                  <ListIcon
-                    as={MdDeleteForever}
-                    onClick={() => deleteProject(projectboard.id)}
-                  />
-                </ListItem>
-              ))}
-            </VStack>
-          </List>
-          <NewProjectModal />
-        </VStack>
+      <Flex height="80vh" alignItems="start" justify="center" overflow="auto">
+        <HStack spacing={100}>
+          <Box>
+            <Heading as="h1" size="lg">
+              Tasks
+            </Heading>
+          </Box>
+          <VStack>
+
+          </VStack>
+          <VStack divider={<StackDivider borderColor="gray.200" />}>
+            <Heading as="h1" size="lg">
+              Projects
+            </Heading>
+            <List spacing={3}>
+              <VStack divider={<StackDivider borderColor="gray.200" />}>
+                {projectboards?.map((projectboard) => (
+                  <ListItem key={projectboard.id}>
+                    <HStack spacing={5}>
+                      <ListIcon as={MdWork} />
+                      <Link
+                        to={`/project/${projectboard.id}`}
+                        onClick={() =>
+                          setCurrentProjectSelection({
+                            id: projectboard.id,
+                            name: projectboard.name,
+                          })
+                        }
+                      >
+                        {projectboard.name}
+                      </Link>
+                      <Button onClick={() => deleteProject(projectboard.id)}>
+                        <Icon as={MdDeleteForever} />
+                      </Button>
+                    </HStack>
+                  </ListItem>
+                ))}
+              </VStack>
+            </List>
+            <NewProjectModal />
+          </VStack>
+        </HStack>
       </Flex>
     </>
   );

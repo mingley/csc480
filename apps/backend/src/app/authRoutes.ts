@@ -59,7 +59,7 @@ router.post('/login', async (req: Request, res: Response) => {
         id: true,
         email: true,
         password: true,
-        refreshToken: true,
+        refresh_token: true,
         projects: true,
         role: true,
       },
@@ -71,13 +71,13 @@ router.post('/login', async (req: Request, res: Response) => {
     const accessToken = createAccessToken(matchingUser.id.toString());
     const refreshToken = createRefreshToken(matchingUser.id.toString());
 
-    matchingUser.refreshToken = refreshToken;
+    matchingUser.refresh_token = refreshToken;
     await prisma.user.update({
       where: {
         id: matchingUser.id,
       },
       data: {
-        refreshToken: refreshToken,
+        refresh_token: refreshToken,
       },
     });
     sendRefreshToken(res, refreshToken);
@@ -109,17 +109,17 @@ router.post('/refresh_token', async (req: Request, res: Response) => {
   // }
   // valid token, check user exists
   const user = await prisma.user.findUnique({
-    where: { refreshToken: token },
+    where: { refresh_token: token },
     select: {
       id: true,
       email: true,
       password: true,
-      refreshToken: true,
+      refresh_token: true,
     },
   });
   if (!user) return res.send({ accesstoken: '' });
   // validate refresh
-  if (user.refreshToken !== token) return res.send({ accesstoken: '' });
+  if (user.refresh_token !== token) return res.send({ accesstoken: '' });
   const accessToken = createAccessToken(user.id.toString());
   const refreshToken = createRefreshToken(user.id.toString());
 
@@ -129,7 +129,7 @@ router.post('/refresh_token', async (req: Request, res: Response) => {
       id: user.id,
     },
     data: {
-      refreshToken: refreshToken,
+      refresh_token: refreshToken,
     },
   });
   sendRefreshToken(res, refreshToken);

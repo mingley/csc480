@@ -41,6 +41,7 @@ export const project_columns = atom({
           title: 'task1',
           content: 'content1',
           status: 'todo',
+          points: 1,
         }
       ],
     }
