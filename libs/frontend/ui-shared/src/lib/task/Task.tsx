@@ -5,15 +5,25 @@ import { ITask } from '../column/Column';
 import { Box, Text, VStack } from '@chakra-ui/react';
 
 export interface TaskProps {
-  task: ITask;
+  task: {
+    id: string;
+    content: string;
+    title: string;
+    status: string;
+    points: number;
+  },
+  index: number;
 }
 
 export function Task(props: TaskProps) {
+
+  const { task, index } = props;
+
   return (
     <Box borderWidth="1px" p={2} m={2} maxHeight="10%" maxWidth="100%" rounded={6} backgroundColor="Highlight">
       <VStack>
-        <Text fontSize="2xl">{props?.task.title}</Text>
-        <Text fontSize="md" noOfLines={2}>{props?.task.content}</Text>
+        <Text fontSize="2xl">{task?.title}</Text>
+        <Text fontSize="md" noOfLines={2}>{task?.content}</Text>
       </VStack>
     </Box>
     // <Draggable draggableId={props.task.id} index={props.index}>

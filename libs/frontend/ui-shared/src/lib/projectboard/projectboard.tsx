@@ -22,6 +22,7 @@ import {
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import NewTaskModal from '../new-task-modal/new-task-modal';
+import TaskModal from '../task-modal/task-modal';
 
 //@ts-ignore
 function replaceItemAtIndex(arr, index, newValue) {
@@ -96,9 +97,6 @@ const Projectboard = () => {
   };
 
   const onDragEnd = (result: DropResult) => {
-
-
-
     const { destination, source, draggableId, type } = result;
 
     console.log(destination, source);
@@ -148,18 +146,17 @@ const Projectboard = () => {
 
     const tasks = Array.from(finishColumn.tasks);
 
-    console.log("old tasks => ",tasks);
+    console.log('old tasks => ', tasks);
 
     //grab the task that is being moved
     const movedTask = startColumn.tasks[source.index];
 
-    console.log("moved task => ", movedTask);
+    console.log('moved task => ', movedTask);
 
     // move that task into the new column
     const newTasks = replaceItemAtIndex(tasks, destination.index, movedTask);
 
-    console.log("new tasks array => ", newTasks);
-
+    console.log('new tasks array => ', newTasks);
 
     // remove the task from the old column
     const oldTasks = removeItemAtIndex(startColumn.tasks, source.index);
@@ -286,6 +283,7 @@ const Projectboard = () => {
                                               >
                                                 Delete me
                                               </Button>
+                                              <TaskModal task={task}/>
                                             </Box>
                                           </Box>
                                         );
