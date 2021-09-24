@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React, { useState } from 'react';
-import { dataset } from '../dataset';
+import { useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -8,9 +7,6 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { Navbar } from '../..';
-import AddColumnForm from '../add-column-form/AddColumnForm';
-import Column from '../column/Column';
-import InviteForm from '../invite-form/InviteForrm';
 import { Box, Button, Flex, Heading, HStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -23,6 +19,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import NewTaskModal from '../new-task-modal/new-task-modal';
 import TaskModal from '../task-modal/task-modal';
+import { ITask } from '../interfaces';
 
 //@ts-ignore
 function replaceItemAtIndex(arr, index, newValue) {
@@ -232,13 +229,7 @@ const Projectboard = () => {
                               // @ts-ignore
                               column.tasks?.map(
                                 (
-                                  task: {
-                                    id: string;
-                                    content: string;
-                                    title: string;
-                                    status: string;
-                                    points: number;
-                                  },
+                                  task: ITask,
                                   index: number
                                 ) => {
                                   return (
@@ -276,14 +267,15 @@ const Projectboard = () => {
                                               Points: {task.points}
                                             </Box>
                                             <Box mt={3}>
+                                              <TaskModal task={task} />
                                               <Button
+                                                m={3}
                                                 onClick={() =>
                                                   deleteTask(task.id, column.id)
                                                 }
                                               >
                                                 Delete me
                                               </Button>
-                                              <TaskModal task={task}/>
                                             </Box>
                                           </Box>
                                         );
