@@ -1,4 +1,4 @@
-// // @ts-nocheck
+// @ts-nocheck
 import { CheckIcon, CloseIcon, EditIcon } from '@chakra-ui/icons';
 import {
   Button,
