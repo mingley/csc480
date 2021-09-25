@@ -47,3 +47,24 @@ export const project_columns = atom({
     }
   ],
 });
+
+export const current_task = atom({
+  key: 'current_taskState',
+  default: {
+    id: '69',
+    title: 'task1',
+    content: 'content1',
+    status: 'todo',
+    points: 1,
+  },
+});
+
+export const task_comments = atom({
+  key: 'taskCommentsState',
+  default: [
+    {
+      id: '69',
+      content: 'content1',
+      author: 'author1',
+    }],
+  });

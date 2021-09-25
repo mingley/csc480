@@ -20,6 +20,7 @@ import { useParams } from 'react-router-dom';
 import NewTaskModal from '../new-task-modal/new-task-modal';
 import TaskModal from '../task-modal/task-modal';
 import { ITask } from '../interfaces';
+import { DeleteIcon } from '@chakra-ui/icons';
 
 //@ts-ignore
 function replaceItemAtIndex(arr, index, newValue) {
@@ -267,14 +268,15 @@ const Projectboard = () => {
                                               Points: {task.points}
                                             </Box>
                                             <Box mt={3}>
-                                              <TaskModal task={task} />
+                                              <TaskModal task={task}/>
                                               <Button
                                                 m={3}
+                                                rightIcon={<DeleteIcon />}
                                                 onClick={() =>
                                                   deleteTask(task.id, column.id)
                                                 }
                                               >
-                                                Delete me
+                                                Delete
                                               </Button>
                                             </Box>
                                           </Box>

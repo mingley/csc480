@@ -1,6 +1,6 @@
 import { Navbar } from '../..';
-import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRecoilValue, useRecoilState, useSetRecoilState } from 'recoil';
 import {
@@ -20,14 +20,19 @@ import {
   ListItem,
   StackDivider,
   VStack,
+  Link,
+  Spacer,
 } from '@chakra-ui/react';
 import { MdWork, MdDeleteForever } from 'react-icons/md';
 import NewProjectModal from '../new-project-modal/new-project-modal';
+import { ITask } from '../interfaces';
 
 export function Projectboardslist() {
   const user = useRecoilValue(userAtom);
   const [projectboards, setProjectboards] = useRecoilState(projectBoardAtom);
   const setCurrentProjectSelection = useSetRecoilState(currentProjectAtom);
+
+  const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
     axios
@@ -35,6 +40,7 @@ export function Projectboardslist() {
       .then((res) => {
         console.log(res.data);
         setProjectboards(res.data.projectboardsAndTasks.projects);
+        setTasks(res.data.projectboardsAndTasks.assigned_tasks);
       });
   }, [setProjectboards, user]);
 
@@ -55,14 +61,22 @@ export function Projectboardslist() {
     <>
       <Navbar />
       <Flex height="80vh" alignItems="start" justify="center" overflow="auto">
-        <HStack spacing={100}>
-          <Box>
-            <VStack>
-              <Heading as="h1" size="lg">
-                Tasks
-              </Heading>
-            </VStack>
-          </Box>
+        <HStack spacing={100} divider={<StackDivider borderColor="gray.200" />}>
+          <VStack divider={<StackDivider borderColor="gray.200" />}>
+            <Heading as="h1" size="lg">
+              Tasks
+            </Heading>
+            <List spacing={3}>
+              {tasks?.map((task: ITask) => (
+                <ListItem key={task.id}>
+                  <ListIcon as={MdWork} />
+                  <Link as={RouterLink} to={`/task/${task.id}`}>
+                    {task.content}
+                  </Link>
+                </ListItem>
+              ))}
+            </List>
+          </VStack>
           <VStack divider={<StackDivider borderColor="gray.200" />}>
             <Heading as="h1" size="lg">
               Projects
@@ -72,8 +86,8 @@ export function Projectboardslist() {
                 {projectboards?.map((projectboard) => (
                   <ListItem key={projectboard.id}>
                     <HStack spacing={10}>
-                      <ListIcon as={MdWork} />
                       <Link
+                        as={RouterLink}
                         to={`/project/${projectboard.id}`}
                         onClick={() =>
                           setCurrentProjectSelection({

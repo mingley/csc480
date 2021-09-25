@@ -31,7 +31,8 @@ router.post('/project/create', async (req: Request, res: Response) => {
     const projectboard = await prisma.project.create({
       data: {
         name,
-        creator: { connect: { id: userId } },
+        users: { connect: { id: userId } },
+        creatorId: userId,
       },
     });
 
@@ -130,6 +131,69 @@ router.delete('/project/task/:taskId', async (req: Request, res: Response) => {
 
     res.status(200).json({ message: 'Task deleted' });
 
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: err.message });
+  }
+});
+
+// get comments for a task
+router.get('/project/task/:taskId', async (req: Request, res: Response) => {
+  try {
+    const taskId = req.params.taskId;
+
+    const comments = await prisma.task.findUnique({
+      where: { id: taskId },
+      select: { comments: true },
+    });
+
+    console.log(comments);
+
+    res.status(200).json(comments);
+
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: err.message });
+  }
+});
+
+// updates task points
+router.post('/project/task', async (req: Request, res: Response) => {
+  try {
+    const { id, points } = req.body;
+
+    const task = await prisma.task.update({
+      where: { id: id },
+      data: { points: points },
+    });
+
+    res.status(200).json(task);
+
+    return;
+  } catch (err) {
+    console.log(err);
+    return res.status(400).json({ error: err.message });
+  }
+});
+
+// updates comments on a task
+router.post('/project/task/comment', async (req: Request, res: Response) => {
+
+  try {
+    const { taskId, comment, userId } = req.body;
+
+    const task = await prisma.taskComment.create({
+      data: {
+        content: comment,
+        task: { connect: { id: taskId } },
+        author: { connect: { id: userId } },
+      },
+    });
+
+    res.status(200).json(task);
+    console.log(task);
     return;
   } catch (err) {
     console.log(err);

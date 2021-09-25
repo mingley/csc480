@@ -8,21 +8,22 @@ generator client {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  email          String    @unique
+  id             String        @id @default(cuid())
+  email          String        @unique
   first_name     String
   last_name      String
   password       String
-  refresh_token  String?   @unique
+  refresh_token  String?       @unique
   projects       Project[]
   role           UserRole
   assigned_tasks Task[]
+  comments       TaskComment[]
 }
 
 model Project {
   id               String   @id @default(cuid())
   name             String
-  creator          User     @relation(fields: [creatorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  users            User[]   
   creatorId        String
   authorized_users String[]
   columns          Column[]
@@ -38,17 +39,29 @@ model Column {
 }
 
 model Task {
-  id          String     @id @default(cuid())
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id          String        @id @default(cuid())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   title       String
   status      TaskStatus
   content     String
-  column      Column     @relation(fields: [columnId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  column      Column        @relation(fields: [columnId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   columnId    String
-  points      Int         @default(0)
-  assigned_to User?       @relation(fields: [assigneeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  points      Int           @default(0)
+  assigned_to User?         @relation(fields: [assigneeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   assigneeId  String
+  comments    TaskComment[]
+}
+
+model TaskComment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  content   String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  taskId    String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  authorId  String
 }
 
 enum UserRole {

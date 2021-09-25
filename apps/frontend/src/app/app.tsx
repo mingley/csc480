@@ -4,7 +4,7 @@ import { RecoilRoot } from 'recoil';
 export const App = () => {
   return (
     <RecoilRoot>
-      <Routes />;
+      <Routes />
     </RecoilRoot>
   );
 };
